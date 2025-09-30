@@ -3,7 +3,7 @@ package hogwarts.data;
 public class Student {
     private String id;
     private String name;
-    private House house = new House();
+    private House house;
     private int age;
 
     public Student(String name, House house, int age) {
