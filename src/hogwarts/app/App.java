@@ -6,6 +6,8 @@ import hogwarts.data.Student;
 import hogwarts.data.Teacher;
 
 import javax.swing.plaf.PanelUI;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -29,12 +31,35 @@ public class App {
         House h2 = new House("Huffelpuff");
         House h3 = new House("Rawenclaw");
 
-        Student s1 = new Student("Harry Potter", h0, 16);
+        try {
+            File file = new File("students.csv");
+            System.out.println("Indhold af filen " + file.getName());
+
+            Scanner scan = new Scanner(file);
+            String header = scan.nextLine();
+            scan.useDelimiter("[;\n]");
+
+            while (scan.hasNext()) {
+                String name = scan.next();
+                String houseString = scan.next();
+                int age = scan.nextInt();
+
+                House house = new House(houseString);
+                Student student = new Student(name, house, age);
+                listOfStudents.add(student);
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        /*Student s1 = new Student("Harry Potter", h0, 16);
         Student s2 = new Student("Ronald Weasley", h0, 16);
         Student s3 = new Student("Hermione Granger", h0, 16);
         listOfStudents.add(s1);
         listOfStudents.add(s2);
-        listOfStudents.add(s3);
+        listOfStudents.add(s3);*/
+
+
     }
 
     private void showMenu() {
@@ -62,7 +87,7 @@ public class App {
     }
 
     private void listAllStudents() {
-        System.out.println("There are "+listOfStudents.size()+ " students in the system");
+        System.out.println("There are " + listOfStudents.size() + " students in the system");
         System.out.println("--------------------------------------------------");
         System.out.println("--------------------------------------------------");
         for (Student student : listOfStudents) {
