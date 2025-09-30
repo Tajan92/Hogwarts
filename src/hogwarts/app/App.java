@@ -1,4 +1,4 @@
-package Hogwarts.app;
+package hogwarts.app;
 
 public class App {
 }

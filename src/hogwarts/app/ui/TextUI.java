@@ -1,4 +1,4 @@
-package Hogwarts.app.ui;
+package hogwarts.app.ui;
 
 public class TextUI {
 }
