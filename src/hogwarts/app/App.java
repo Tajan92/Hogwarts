@@ -26,10 +26,10 @@ public class App {
     }
 
     private void loadStudents() {
-        House h0 = new House("Griffendor");
+       /* House h0 = new House("Griffendor");
         House h1 = new House("Slytherin");
         House h2 = new House("Huffelpuff");
-        House h3 = new House("Rawenclaw");
+        House h3 = new House("Rawenclaw");*/
 
         try {
             File file = new File("students.csv");
