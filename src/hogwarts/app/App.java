@@ -8,6 +8,7 @@ import hogwarts.data.Teacher;
 import javax.swing.plaf.PanelUI;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -22,14 +23,26 @@ public class App {
         System.out.println("System is started");
         loadStudents();
         showMenu();
+        saveStudents();
 
     }
 
+    private void saveStudents() {
+        try {
+            System.out.println("Saving students");
+            File file = new File("students.csv");
+            PrintStream output = new PrintStream(file);
+            output.println("name;house;age");
+            for(Student student : listOfStudents){
+                output.printf("%s;%s;%d\n", student.getName(), student.getHouse(),student.getAge());
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void loadStudents() {
-       /* House h0 = new House("Griffendor");
-        House h1 = new House("Slytherin");
-        House h2 = new House("Huffelpuff");
-        House h3 = new House("Rawenclaw");*/
+
 
         try {
             File file = new File("students.csv");
@@ -41,11 +54,10 @@ public class App {
 
             while (scan.hasNext()) {
                 String name = scan.next();
-                String houseString = scan.next();
+                String house = scan.next();
                 int age = scan.nextInt();
 
-                House house = new House(houseString);
-                Student student = new Student(name, house, age);
+                Student student = new Student(name, House.findByName(house), age);
                 listOfStudents.add(student);
             }
         } catch (FileNotFoundException e) {
@@ -100,10 +112,28 @@ public class App {
     private void createNewStudent() {
         String name = TextUI.promptText2("Name of student?");
         int age = TextUI.promptText("Age of student?");
-        String houseString = TextUI.promptText2("House of student?");
+        // String houseString = TextUI.promptText2("House of student?");
+        String houseID = TextUI.promptText2("House of student?");
+        //House house = null;
+        /*switch (houseID) {
+            case 1:
+                house = House.Griffendor;
+            break;
+            case 2:
+                house = House.Slytherin;
+                break;
+            case 3:
+                house = House.Huffelpuff;
+                break;
+            case 4:
+                house = House.Rawenclaw;
+                break;
+            default:
+                house = House.Griffendor;
+        }*/
 
-        House house = new House(houseString);
-        Student student = new Student(name, house, age);
+        //House house = new House(houseString);
+        Student student = new Student(name, House.findByName(houseID), age);
         listOfStudents.add(student);
 
 

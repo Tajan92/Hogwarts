@@ -1,4 +1,4 @@
-package hogwarts.test;
+/*package hogwarts.test;
 
 import hogwarts.data.Course;
 import hogwarts.data.House;
@@ -30,3 +30,4 @@ public class Test {
 
     }
 }
+*/
