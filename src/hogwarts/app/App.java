@@ -2,10 +2,9 @@ package hogwarts.app;
 
 import hogwarts.app.ui.TextUI;
 import hogwarts.data.House;
+import hogwarts.data.MenuUI;
 import hogwarts.data.Student;
-import hogwarts.data.Teacher;
 
-import javax.swing.plaf.PanelUI;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -14,6 +13,7 @@ import java.util.Scanner;
 
 
 public class App {
+    MenuUI menu = new MenuUI();
     public App() {
     }
 
@@ -24,7 +24,6 @@ public class App {
         loadStudents();
         showMenu();
         saveStudents();
-
     }
 
     private void saveStudents() {
@@ -33,8 +32,8 @@ public class App {
             File file = new File("students.csv");
             PrintStream output = new PrintStream(file);
             output.println("name;house;age");
-            for(Student student : listOfStudents){
-                output.printf("%s;%s;%d\n", student.getName(), student.getHouse(),student.getAge());
+            for (Student student : listOfStudents) {
+                output.printf("%s;%s;%d\n", student.getName(), student.getHouse(), student.getAge());
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -63,39 +62,114 @@ public class App {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        /*Student s1 = new Student("Harry Potter", h0, 16);
-        Student s2 = new Student("Ronald Weasley", h0, 16);
-        Student s3 = new Student("Hermione Granger", h0, 16);
-        listOfStudents.add(s1);
-        listOfStudents.add(s2);
-        listOfStudents.add(s3);*/
+    private void editStudent() {
+        ArrayList<String> menuOptions = new ArrayList<>();
+        menuOptions.add("Select student from list");
+        menuOptions.add("Search for student by name");
+        int choice;
+        Student selectedStudent = null;
+
+        choice = menu.promptMenuChoice("Edit student", menuOptions, false);
+        switch (choice) {
+            case 1:
+                selectedStudent = selectStudentFromList();
+                System.out.println("hej 1");
+                break;
+            case 2:
+                selectedStudent = selectStudentBySearch();
+                System.out.println("hej 2");
+                break;
+        }
+
+        String name = TextUI.promptText("Name: ",selectedStudent.getName());
+        String house = TextUI.promptText("House: ",selectedStudent.getHouse().getName());
+        int age = TextUI.promptNumeric("Age: ", selectedStudent.getAge());
+        Student student = new Student(name, House.findByName(house), age);
+
+    }
+
+    private void deleteStudent() {
+        ArrayList<String> menuOptions = new ArrayList<>();
+        menuOptions.add("Select student from list");
+        menuOptions.add("Search for student by name");
+        int choice;
+
+        choice = menu.promptMenuChoice("Delete student", menuOptions, false);
+
+        switch (choice) {
+            case 1:
+                selectStudentFromList();
+                listOfStudents.remove(selectStudentFromList());
+                return;
+            case 2:
+                selectStudentBySearch();
+                listOfStudents.remove(selectStudentBySearch());
+                break;
+        }
+    }
+
+    private Student selectStudentFromList() {
+        ArrayList<String> studentOptions = new ArrayList<>();
+
+        for (Student student : listOfStudents) {
+            studentOptions.add(student.getName());
+        }
+
+        MenuUI menu = new MenuUI();
+        int choice = menu.promptMenuChoice("Select student", studentOptions, false);
+
+        return listOfStudents.get(choice - 1);
+    }
+
+    private Student selectStudentBySearch() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Please enter a name to search for: ");
+        String searchFor = scanner.nextLine();
+
+        for (Student student : listOfStudents) {
+
+                if (student.getName().toLowerCase().contains(searchFor.toLowerCase())) {
+                    return student;
+                }
+}
+        System.out.println("No student with that name");
+        return null;
+
 
 
     }
 
     private void showMenu() {
         int choice;
-        while (true) {
-            choice = TextUI.promptText("""
-                    Student Menu
-                    ------------
-                    1) List all students
-                    2) Create new student
-                    
-                    0) Exit application
-                    """);
-            if (choice == 1) {
-                listAllStudents();
-            } else if (choice == 2) {
-                createNewStudent();
-            } else if (choice == 0) {
-                return;
-            } else {
-                System.out.println("Try the numbers 1,2 or 0");
-            }
-        }
+        ArrayList<String> menuOptions = new ArrayList<>();
+        menuOptions.add("List all students");
+        menuOptions.add("Create new student");
+        menuOptions.add("Edit existing student");
+        menuOptions.add("Delete student");
+        menuOptions.add("Exit application");
 
+        MenuUI menu = new MenuUI();
+        //while (true) {
+        choice = menu.promptMenuChoice("StudentMenu", menuOptions, true);
+
+        switch (choice) {
+            case 0:
+                return;
+            case 1:
+                listAllStudents();
+                break;
+            case 2:
+                createNewStudent();
+                break;
+            case 3:
+                editStudent();
+                break;
+            case 4:
+                deleteStudent();
+                break;
+        }
     }
 
     private void listAllStudents() {
@@ -110,42 +184,14 @@ public class App {
     }
 
     private void createNewStudent() {
-        String name = TextUI.promptText2("Name of student?");
-        int age = TextUI.promptText("Age of student?");
+        String name = TextUI.promptText("Name of student?");
+        int age = TextUI.promptNumeric("Age of student?");
         // String houseString = TextUI.promptText2("House of student?");
-        String houseID = TextUI.promptText2("House of student?");
+        String houseID = TextUI.promptText("House of student?");
         //House house = null;
-        /*switch (houseID) {
-            case 1:
-                house = House.Griffendor;
-            break;
-            case 2:
-                house = House.Slytherin;
-                break;
-            case 3:
-                house = House.Huffelpuff;
-                break;
-            case 4:
-                house = House.Rawenclaw;
-                break;
-            default:
-                house = House.Griffendor;
-        }*/
 
-        //House house = new House(houseString);
         Student student = new Student(name, House.findByName(houseID), age);
         listOfStudents.add(student);
-
-
-
-
-        /*Scanner scan = new Scanner(System.in);
-        System.out.println("Name of student: ");//Stille brugeren et spørgsmål
-        String name = scan.nextLine();          //Give brugere et sted at placere sit svar og vente på svaret
-        System.out.println("Age of student: ");
-        int age = Integer.parseInt(scan.nextLine());
-        System.out.println("House of student: ");
-        String house = scan.nextLine();*/
     }
 
 }
