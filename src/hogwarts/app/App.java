@@ -14,6 +14,7 @@ import java.util.Scanner;
 
 public class App {
     MenuUI menu = new MenuUI();
+
     public App() {
     }
 
@@ -65,29 +66,37 @@ public class App {
     }
 
     private void editStudent() {
-        ArrayList<String> menuOptions = new ArrayList<>();
-        menuOptions.add("Select student from list");
-        menuOptions.add("Search for student by name");
         int choice;
         Student selectedStudent = null;
 
+        ArrayList<String> menuOptions = new ArrayList<>();
+        menuOptions.add("Select student from list");
+        menuOptions.add("Search for student by name");
+
         choice = menu.promptMenuChoice("Edit student", menuOptions, false);
+
         switch (choice) {
             case 1:
                 selectedStudent = selectStudentFromList();
-                System.out.println("hej 1");
+                System.out.println("Press Enter for default");
                 break;
             case 2:
                 selectedStudent = selectStudentBySearch();
-                System.out.println("hej 2");
+                System.out.println("Press Enter for default");
                 break;
         }
-
-        String name = TextUI.promptText("Name: ",selectedStudent.getName());
-        String house = TextUI.promptText("House: ",selectedStudent.getHouse().getName());
+        if (selectedStudent==null){
+            System.out.println("Try again!");
+            editStudent();
+        }
+        String name = TextUI.promptText("Name ", "("+selectedStudent.getName()+"): ");
+        String house = TextUI.promptText("House: ", "("+selectedStudent.getHouse().getName()+"): ");
         int age = TextUI.promptNumeric("Age: ", selectedStudent.getAge());
-        Student student = new Student(name, House.findByName(house), age);
 
+       //Student student = new Student(name, House.findByName(house), age);
+        Student student = new Student(name, House.findByName(house), age);
+        listOfStudents.set(listOfStudents.indexOf(selectedStudent), student);
+        backOrExit();
     }
 
     private void deleteStudent() {
@@ -102,12 +111,13 @@ public class App {
             case 1:
                 selectStudentFromList();
                 listOfStudents.remove(selectStudentFromList());
-                return;
+                break;
             case 2:
                 selectStudentBySearch();
                 listOfStudents.remove(selectStudentBySearch());
                 break;
         }
+        backOrExit();
     }
 
     private Student selectStudentFromList() {
@@ -121,6 +131,7 @@ public class App {
         int choice = menu.promptMenuChoice("Select student", studentOptions, false);
 
         return listOfStudents.get(choice - 1);
+
     }
 
     private Student selectStudentBySearch() {
@@ -130,13 +141,12 @@ public class App {
 
         for (Student student : listOfStudents) {
 
-                if (student.getName().toLowerCase().contains(searchFor.toLowerCase())) {
-                    return student;
-                }
-}
+            if (student.getName().toLowerCase().contains(searchFor.toLowerCase())) {
+                return student;
+            }
+        }
         System.out.println("No student with that name");
         return null;
-
 
 
     }
@@ -152,7 +162,7 @@ public class App {
 
         MenuUI menu = new MenuUI();
         //while (true) {
-        choice = menu.promptMenuChoice("StudentMenu", menuOptions, true);
+        choice = menu.promptMenuChoice("Student Menu", menuOptions, true);
 
         switch (choice) {
             case 0:
@@ -170,6 +180,8 @@ public class App {
                 deleteStudent();
                 break;
         }
+        backOrExit();
+
     }
 
     private void listAllStudents() {
@@ -181,6 +193,8 @@ public class App {
         }
         System.out.println("--------------------------------------------------");
         System.out.println("--------------------------------------------------");
+
+        backOrExit();
     }
 
     private void createNewStudent() {
@@ -192,6 +206,26 @@ public class App {
 
         Student student = new Student(name, House.findByName(houseID), age);
         listOfStudents.add(student);
+
+        backOrExit();
     }
 
+    public void backOrExit() {
+        ArrayList<String> menuOptions = new ArrayList<>();
+        menuOptions.add("Back to Student Menu");
+        menuOptions.add("Exit");
+
+        int choice = menu.promptMenuChoice("Enter a number:", menuOptions, true);
+        switch (choice) {
+            case 1:
+                showMenu();
+                break;
+            case 0:
+                saveStudents();
+                return;
+        }
+
+    }
 }
+
+
