@@ -85,15 +85,15 @@ public class App {
                 System.out.println("Press Enter for default");
                 break;
         }
-        if (selectedStudent==null){
+        if (selectedStudent == null) {
             System.out.println("Try again!");
             editStudent();
         }
-        String name = TextUI.promptText("Name ", "("+selectedStudent.getName()+"): ");
-        String house = TextUI.promptText("House: ", "("+selectedStudent.getHouse().getName()+"): ");
+        String name = TextUI.promptText("Name: ", selectedStudent.getName());
+        String house = TextUI.promptText("House: ", selectedStudent.getHouse().getName());
+
         int age = TextUI.promptNumeric("Age: ", selectedStudent.getAge());
 
-       //Student student = new Student(name, House.findByName(house), age);
         Student student = new Student(name, House.findByName(house), age);
         listOfStudents.set(listOfStudents.indexOf(selectedStudent), student);
         backOrExit();
@@ -110,14 +110,28 @@ public class App {
         switch (choice) {
             case 1:
                 selectStudentFromList();
-                listOfStudents.remove(selectStudentFromList());
+                /*switch (choice) {
+                    case 1:
+                        listOfStudents.remove(selectStudentFromList());
+                        break;
+
+                    case 2:
+                        return;
+                }*/
                 break;
             case 2:
                 selectStudentBySearch();
-                listOfStudents.remove(selectStudentBySearch());
+                choice = menu.promptMenuChoice("Delete student", menuOptions, false);
+                System.out.println("Press 1 for delete\n Press 2 to go back");
+                /*switch (choice) {
+                    case 1: listOfStudents.remove(selectStudentBySearch());
+                    break;
+                    case 2: return;
+                }*/
                 break;
         }
-        backOrExit();
+        wait1S();
+        showMenu();
     }
 
     private Student selectStudentFromList() {
@@ -135,20 +149,20 @@ public class App {
     }
 
     private Student selectStudentBySearch() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Please enter a name to search for: ");
-        String searchFor = scanner.nextLine();
+        String searchFor = TextUI.promptText("Please enter a name to search for: ");
+        // Scanner scanner = new Scanner(System.in);
+        //  System.out.print("Please enter a name to search for: ");
+        // String searchFor = scanner.nextLine();
 
         for (Student student : listOfStudents) {
 
             if (student.getName().toLowerCase().contains(searchFor.toLowerCase())) {
+                System.out.println(student);
                 return student;
             }
         }
         System.out.println("No student with that name");
         return null;
-
-
     }
 
     private void showMenu() {
@@ -180,7 +194,6 @@ public class App {
                 deleteStudent();
                 break;
         }
-        backOrExit();
 
     }
 
@@ -226,6 +239,15 @@ public class App {
         }
 
     }
+
+    public void wait1S() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
 
 

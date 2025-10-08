@@ -35,7 +35,7 @@ public class TextUI {
     public static int promptNumeric(String msg, int defaultValue) {
         Scanner scan = new Scanner(System.in);
         while (true) {
-            System.out.print(msg);
+            System.out.print(msg+(defaultValue));
             String input = scan.nextLine().trim();
             if (input.isEmpty()) {
                 return defaultValue;
